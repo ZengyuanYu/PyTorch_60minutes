@@ -18,6 +18,7 @@ import os
 import copy
 
 plt.ion()   # interactive mode
+num_classes = 6  #分类数
 
 #标准化
 data_transforms = {
@@ -36,7 +37,7 @@ data_transforms = {
 }
 
 #数据路径
-data_dir = 'hymenoptera_data'
+data_dir = 'data_caoyao'
 
 #图片载入，x为变量（train,val）代表不同的dataset
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
@@ -174,7 +175,7 @@ def visualize_model(model, num_images=6):
 
 model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
-model_ft.fc = nn.Linear(num_ftrs, 2)
+model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
 if use_gpu:
     model_ft = model_ft.cuda()
