@@ -13,7 +13,9 @@ import unicodedata
 import string
 
 all_letters = string.ascii_letters + " .,;'"
+#print(all_letters)
 n_letters = len(all_letters)
+#print(n_letters)
 
 
 def unicodeToAscii(s):
@@ -23,13 +25,13 @@ def unicodeToAscii(s):
         and c in all_letters
     )
 
-print(unicodeToAscii('Ślusàrski'))#unicodeToAscii 目的是将其他字母转化成为ascii中有的
-
+print('ASCII码转化',unicodeToAscii('Ślusàrski')) # unicodeToAscii 目的是将其他字母转化成为ascii中有的
+print('/n')
 # Build the category_lines dictionary, a list of names per language
-category_lines = {}
-all_categories = []
+category_lines = {}# dict
+all_categories = []# list
 
-# Read a file and split into lines
+# 将读取的文件显示成行
 def readLines(filename):
     lines = open(filename, encoding='utf-8').read().strip().split('\n')
     return [unicodeToAscii(line) for line in lines]
@@ -39,6 +41,10 @@ for filename in findFiles('data/names/*.txt'):
     all_categories.append(category)#遍历将类别append到all_categories的尾部
     lines = readLines(filename)#将txt名字一个文件夹里面排成一行
     category_lines[category] = lines
-    print(category_lines)
-n_categories = len(all_categories)
+    #print(category,category_lines[category])# 查看字典中元素和key
+n_categories = len(all_categories) #语言种类数目
+print('共有语言：%s种' % n_categories)
+
+# print(category_lines['German'][:5])#输出列表中的key
+# print(all_categories[0])
 
