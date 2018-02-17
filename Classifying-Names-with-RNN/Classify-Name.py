@@ -5,6 +5,9 @@ from __future__ import unicode_literals, print_function, division
 from io import open
 import glob
 
+#********************************************************************#
+#数据预处理
+#********************************************************************#
 def findFiles(path): return glob.glob(path)
 
 print(findFiles('data/names/*.txt'))
@@ -66,6 +69,59 @@ def lineToTensor(line):
         tensor[li][0][letterToIndex(letter)] = 1
     return tensor
 
-print(letterToTensor('J'))
+# one-hot词向量显示
+# print(letterToTensor('J'))
+# print(lineToTensor('Jones').size())
 
-print(lineToTensor('Jones').size())
+#********************************************************************#
+#创建神经网络模型
+#********************************************************************#
+import torch.nn as nn
+from torch.autograd import Variable
+
+class RNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(RNN, self).__init__()
+
+        self.hidden_size = hidden_size
+
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
+        self.i2o = nn.Linear(input_size + hidden_size, output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
+
+    def forward(self, input, hidden):
+        combined = torch.cat((input, hidden), 1)
+        hidden = self.i2h(combined)
+        output = self.i2o(combined)
+        output = self.softmax(output)
+        return output, hidden
+
+    def initHidden(self):
+        return Variable(torch.zeros(1, self.hidden_size))
+
+n_hidden = 128
+rnn = RNN(n_letters, n_hidden, n_categories)
+print(rnn)
+
+# # Test
+# input = Variable(letterToTensor('A'))
+# hidden = Variable(torch.zeros(1, n_hidden))
+# output, next_hidden = rnn(input, hidden)
+# print(output)
+# print(next_hidden)
+
+# Test
+input = Variable(lineToTensor('LASte'))
+hidden = Variable(torch.zeros(1, n_hidden))
+output, next_hidden = rnn(input[0], hidden)
+print(output)
+
+#********************************************************************#
+#训练
+#********************************************************************#
+def categoryFromOutput(output):
+    top_n, top_i = output.data.topk(1) # Tensor out of Variable with .data
+    category_i = top_i[0][0]
+    return all_categories[category_i], category_i
+
+print(categoryFromOutput(output))
