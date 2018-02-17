@@ -48,3 +48,24 @@ print('共有语言：%s种' % n_categories)
 # print(category_lines['German'][:5])#输出列表中的key
 # print(all_categories[0])
 
+import torch
+# 找到letter在‘abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,;'’的索引值，n_letter=57
+def letterToIndex(letter):
+    return all_letters.find(letter)
+
+# 转换一个字母为<1 x n_letters> Tensor
+def letterToTensor(letter):
+    tensor = torch.zeros(1, n_letters)
+    tensor[0][letterToIndex(letter)] = 1
+    return tensor
+
+# 转换字符串为 <line_length x 1 x n_letters>,
+def lineToTensor(line):
+    tensor = torch.zeros(len(line), 1, n_letters)
+    for li, letter in enumerate(line):
+        tensor[li][0][letterToIndex(letter)] = 1
+    return tensor
+
+print(letterToTensor('J'))
+
+print(lineToTensor('Jones').size())
