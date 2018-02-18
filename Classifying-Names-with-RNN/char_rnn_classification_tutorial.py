@@ -379,6 +379,7 @@ for iter in range(1, n_iters + 1):
     # Add current loss avg to list of losses
     if iter % plot_every == 0:
         all_losses.append(current_loss / plot_every)
+        print(all_losses)
         current_loss = 0
 
 
